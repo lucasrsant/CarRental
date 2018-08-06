@@ -1,19 +1,24 @@
 import * as express from 'express'
+import * as bodyParser from 'body-parser';
 import { AppInjector } from './injector';
 
 class App {
-  public express: express.Express
+  public app: express.Express
 
   constructor () {
-    this.express = express()
+    this.app = express()
     this.mountRoutes()
   }
 
   private mountRoutes (): void {
     const router = express.Router()
-    router.use('/car', AppInjector.providesCarRouter());
-    this.express.use('/', router)
+    const appInjector = new AppInjector();
+
+    router.use('/car', appInjector.providesCarRouter());
+    
+    this.app.use(bodyParser.json());
+    this.app.use('/', router)
   }
 }
 
-export default new App().express
+export default new App().app

@@ -10,7 +10,7 @@ export class DefaultPersistentDatabaseConfig implements PersistentDatabaseConfig
     }
 
     password(): string {
-        return "";
+        return "123456";
     }
 
     databaseName(): string {

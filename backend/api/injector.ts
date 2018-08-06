@@ -8,36 +8,40 @@ import { PersistentDatabaseConnection } from "../library/repository/persistent/p
 import { DefaultPersistentDatabaseConfig } from "../library/repository/persistent/default-persistent-config";
 import { PersistentDatabaseConfig } from "../library/repository/persistent/persistent-database-config";
 import { ListCarsUseCase } from '../domain/usecases/car/list-cars-usecase';
+import { SaveCarDetailsUseCase } from '../domain/usecases/car/save-car-details-usecase';
 
 export class AppInjector {
-    static providesCarRouter(): Router {
-        let router = new CarRouter(AppInjector.providesCarController());
-        console.log(router);
-        return router.router;
+    providesCarRouter(): Router {
+        return new CarRouter(this.providesCarController()).router;
     }
 
-    private static providesCarController(): CarController {
-        return new CarController(AppInjector.providesGetCarDetailsUseCase(),
-                                AppInjector.providesListCarsUseCase());
+    private providesCarController(): CarController {
+        return new CarController(this.providesGetCarDetailsUseCase(),
+                                this.providesListCarsUseCase(),
+                                this.providesSaveCarDetailsUseCase());
     }
 
-    private static providesListCarsUseCase() {
-        return new ListCarsUseCase(AppInjector.providesCarRepository());
+    private providesListCarsUseCase() {
+        return new ListCarsUseCase(this.providesCarRepository());
     }
 
-    private static providesGetCarDetailsUseCase(): GetCarDetailsUseCase {
-        return new GetCarDetailsUseCase(AppInjector.providesCarRepository());
+    private providesGetCarDetailsUseCase(): GetCarDetailsUseCase {
+        return new GetCarDetailsUseCase(this.providesCarRepository());
     }
 
-    private static providesCarRepository(): CarRepository {
-        return new PersistentCarRepository(AppInjector.providesPersistentDatabaseConnection());
+    private providesSaveCarDetailsUseCase(): SaveCarDetailsUseCase {
+        return new SaveCarDetailsUseCase(this.providesCarRepository());
     }
 
-    private static providesPersistentDatabaseConnection(): PersistentDatabaseConnection {
-        return new PersistentDatabaseConnection(AppInjector.providesDefaultPersistentDatabaseConfig());
+    private providesCarRepository(): CarRepository {
+        return new PersistentCarRepository(this.providesPersistentDatabaseConnection());
     }
 
-    private static providesDefaultPersistentDatabaseConfig(): PersistentDatabaseConfig {
+    private providesPersistentDatabaseConnection(): PersistentDatabaseConnection {
+        return new PersistentDatabaseConnection(this.providesDefaultPersistentDatabaseConfig());
+    }
+
+    private providesDefaultPersistentDatabaseConfig(): PersistentDatabaseConfig {
         return new DefaultPersistentDatabaseConfig();
     }
 }

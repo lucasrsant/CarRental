@@ -1,9 +1,11 @@
 import { Car } from './../../entities/car-entity';
 import { PersistentDatabaseConfig } from './persistent-database-config';
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
+import { Observable, from } from '../../../../node_modules/rxjs';
 
 export class PersistentDatabaseConnection {
     connection: Promise<Connection>;
+    rxConnection: Observable<Connection>;
 
     constructor(private dbConfig: PersistentDatabaseConfig) {
         let connOptions: ConnectionOptions = {
@@ -16,10 +18,11 @@ export class PersistentDatabaseConnection {
             entities: [
                 Car
             ],
-            synchronize: true,
-            logging: false
+            synchronize: false,
+            logging: true
         };
 
-        this.connection = createConnection(connOptions);        
+        this.connection = createConnection(connOptions);
+        this.rxConnection = from(this.connection);
     }
 }

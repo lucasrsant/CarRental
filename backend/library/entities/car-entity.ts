@@ -2,8 +2,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm'
 
 @Entity()
 export class Car {
-
-    @PrimaryColumn({type: "text", length: 8})
+    @PrimaryColumn({type: "varchar", length: "8"})
     plate: string = "";
 
     @Column("text")
